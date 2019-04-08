@@ -1,4 +1,4 @@
-## 🖨️ Image Copier 🖨️
+# Image Copier
 🖨️ A tool to make copying your images a little more easier.
 
 #### Why?

@@ -1,0 +1,74 @@
+details.UnitsButton {
+  display: inline-block;
+  width: 33px;
+  position: relative;
+  color: #454545;
+  height: 30px;
+}
+
+details.UnitsButton[open] {
+  border-radius: 3px 3px 0 0;
+}
+
+details.UnitsButton summary {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  padding-top: 5px;
+  box-sizing: border-box;
+  height: 35px;
+  font-size: 14px;
+  background: white;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+  list-style: none;
+  border: 2px solid black;
+  border-left: none;
+}
+
+details.UnitsButton summary::-webkit-details-marker {
+  display: none;
+}
+
+details.UnitsButton summary:hover {
+  background: #ededed;
+}
+
+details.UnitsButton .select {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #c5c5c5;
+  width: 36px;
+  left: -4px;
+  border-radius: 0 0 3px 3px;
+  background: #fff;
+  z-index: 100;
+}
+
+details.UnitsButton .select__option {
+  cursor: pointer;
+  font-size: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 3px;
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+
+details.UnitsButton .select:hover .select__option.active {
+  background: #fff;
+  color: #454545;
+}
+
+details.UnitsButton .select__option.active,
+details.UnitsButton .select:hover .select__option.active:hover,
+details.UnitsButton .select__option:hover {
+  background: black;
+  color: #fff;
+}
+
+details.UnitsButton .select__option input {
+  display: none;
+}

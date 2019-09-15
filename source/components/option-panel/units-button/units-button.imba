@@ -7,9 +7,9 @@ export tag UnitsButton < details
 	def mount
 		@options = self.@dom.querySelectorAll(".select > .select__option")
 		@mouseDown = false
-		@value = @summary.@dom:textContent = @firstOption.value
-		self.addEventListeners
-		self.setAria
+		@value = @summary.@dom:textContent = @firstOption.value()
+		self.addEventListeners()
+		self.setAria()
 
 	def addEventListeners
 		self.@dom.addEventListener('toggle', do
@@ -32,33 +32,32 @@ export tag UnitsButton < details
 			)
 		)
 
-		self.@dom.addEventListener('keyup', do |e|
+		self.@dom.addEventListener('keyup', &) do |e|
 			const keycode = e:which
 			const current = [*@options].indexOf(self.@dom.querySelector('.active'))
 			switch keycode
 				when 27 # ESC
 					@self.@dom.removeAttribute('open')
 				when 35
-					e.preventDefault
+					e.preventDefault()
 					if !self.@dom:open
 						self.@dom.setAttribute('open', '')
 					self.setChecked(@options[@options:length - 1].querySelector('input'))
 				when 36
-					e.preventDefault
+					e.preventDefault()
 					if !self.@dom:open
 						self.@dom.setAttribute('open', '')
 					self.setChecked(@options[0].querySelector('input'))
 				when 38
-					e.preventDefault
+					e.preventDefault()
 					if !self.@dom:open
 						self.@dom.setAttribute('open', '')
 					self.setChecked(@options[current > 0 ? current - 1 : 0].querySelector('input'))
 				when 40
-					e.preventDefault
+					e.preventDefault()
 					if !self.@dom:open
 						self.@dom.setAttribute('open', '')
 					self.setChecked(@options[current <= @options:length ? current + 1 : @options:length - 1]?.querySelector('input'))
-		)
 
 	def setAria
 		self.@dom.setAttribute('aria-haspopup', 'listbox')

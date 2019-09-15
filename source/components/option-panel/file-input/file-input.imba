@@ -1,10 +1,34 @@
 export tag FileInput
 	prop labelText default: "Select File"
 
-	def fileSelected e
-		console.log e.target.@dom:files
-		if e.target.@dom:files && e.target.@dom:files:length > 0
-			@labelText = e.target.@dom:value.split("\\").pop()
+	def fileSelected(event)
+		if event.target.@dom:files && event.target.@dom:files:length > 0
+			let name = event.target.@dom:value.split("\\").pop()
+			
+			# When too long, cut it until 33 char and add ellipses at the end
+			@labelText = name.substring(0, 33):length >= 33 ? "{name.substring(0, 30)}..." : name
+			
+			let reader = FileReader.new()
+			reader.readAsDataURL(event.target.@dom:files[0])
+			reader:onload = do |e|
+				if data.@paper:image:file !== reader
+					data.@paper:image:file = Image.new()
+					data.@paper:image:file:src = reader:result
+
+					data.@paper:image:file:onload = do |e|
+						data.@paper:image:origWidth = data.@paper:image:file:width
+						data.@paper:image:origHeight = data.@paper:image:file:height
+						data.@sizes:width:value = "{data.@paper:image:file:width / 2}"
+						data.@sizes:height:value = "{data.@paper:image:file:height / 2}"
+						data.@paper.imageSize = {
+							width: data.@paper:image:file:width / 2,
+							height: data.@paper:image:file:height / 2
+						}
+
+					data.@paper.@isChanged = true
+
+					Imba.commit
+					data.@stage.batchDraw()
 
 	def render
 		<self .files>

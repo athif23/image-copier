@@ -24,6 +24,7 @@ details.UnitsButton summary {
   list-style: none;
   border: 2px solid black;
   border-left: none;
+  user-select: none;
 }
 
 details.UnitsButton summary::-webkit-details-marker {
@@ -55,6 +56,7 @@ details.UnitsButton .select__option {
   padding: 5px 3px;
   border: 1px solid black;
   box-sizing: border-box;
+  user-select: none;
 }
 
 details.UnitsButton .select:hover .select__option.active {

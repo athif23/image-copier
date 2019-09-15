@@ -2,9 +2,12 @@
 
 .OptionPanel {
 	height: 100%;
-	display: grid;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
 	border-right: 1.5px solid black;
-	grid-template-rows: 0.6fr 1fr 1fr 0.6fr 0.4fr;
+	min-width: 350px;
+	max-width: 390px;
 
 	.generate-field {
 		padding: 0 30px;
@@ -18,6 +21,10 @@
 			text-align: center;
 		}
 
+		.loading {
+		    background-position: left bottom;
+		}
+
 		button {
 			width: 75%;
 			height: 48px;
@@ -26,6 +33,12 @@
 			background: #fcff66;
 			font-size: 20px;
 			letter-spacing: 3px;
+		    transition: all 2s ease;
+			background: -webkit-linear-gradient(right, #fcff66 50%, #47ff80 50%);
+			background: -o-linear-gradient(right, #fcff66 50%, #47ff80 50%);
+			background: linear-gradient(to left, #fcff66 50%, #47ff80 50%);
+		    background-size: 200% 100%;
+		    background-position: right bottom;
 			font-weight: 500;
 		}
 	}
@@ -34,7 +47,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 0 15px;
+		padding: 0 15px 10px 15px;
 
 		.copyright {
 			font-size: 12px;
@@ -211,11 +224,43 @@
 		}
 	}
 
+	.FilesField {
+		padding: 5px 0;
+	}
+
 	.TwoInputs {
 		padding: 0 30px;
 		display: grid;
 		grid-template-columns: 1fr 0.1fr 1fr;
 		margin-bottom: 30px;
+
+		.lock-ratio {
+			width: 100%;
+			display: flex;
+			justify-content: center;
+			height: 7px;
+			margin-top: 13px;
+			background: #fcff66;
+
+			&:before {
+				content: "";
+				height: 2px;
+				width: 10px;
+				background: #000000;
+				margin-top: 3px;
+				transform: rotate(-45deg);
+			}
+
+			&:after {
+				content: "";
+				height: 2px;
+				width: 10px;
+				background: #000000;
+				position: absolute;
+				margin-top: 3px;
+				transform: rotate(45deg);
+			}
+		}
 
 		.input {
 			width: 100%;
@@ -291,4 +336,61 @@
 			}
 		}
 	}
+}
+
+// Animation for GENERATE Button
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 27px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: black;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 6px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 6px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 26px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 45px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(19px, 0);
+  }
 }

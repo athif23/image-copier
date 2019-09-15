@@ -15,6 +15,7 @@
     "jspdf": "^1.5.3",
     "konva": "^3.3.2",
     "normalize-scss": "^7.0.1",
+    "set-value": "^2.0.1",
     "style-loader": "^0.23.1",
     "webpack-dev-server": "^3.1.10"
   },

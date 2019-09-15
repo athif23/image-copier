@@ -20,8 +20,8 @@ export class Stores
 	# * Initialize the store
 	def initialize
 		@sizes = {
-			height: { value: "0", unit: "px" }
-			width:  { value: "0", unit: "px" }
+			height: { value: "10", unit: "px" },
+			width:  { value: "10", unit: "px" }
 		}
 		@filename = { value: "" }
 		@space = { value: "1", unit: "px" }

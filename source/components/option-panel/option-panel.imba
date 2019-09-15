@@ -20,5 +20,8 @@ export tag OptionPanel
 						else
 							"GENERATE"
 			<.footer>
-				<.copyright> <p> "Made by At Indo"
+				<.copyright> 
+					<p> 
+					"Made by " 
+					<a href="https://github.com/athif23" .github> "At Indo"
 				<.donate> <button> "DONATES"

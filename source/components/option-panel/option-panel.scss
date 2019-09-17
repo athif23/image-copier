@@ -1,4 +1,6 @@
-@import "./units-button/units-button";
+@import "./two-inputs/units-button/units-button";
+
+$yellow: #fcff66;
 
 .OptionPanel {
 	height: 100%;
@@ -30,13 +32,14 @@
 			height: 48px;
 			border: 1.5px solid;
 			border-radius: 4px;
-			background: #fcff66;
+			background: $yellow;
 			font-size: 20px;
 			letter-spacing: 3px;
 		    transition: all 2s ease;
-			background: -webkit-linear-gradient(right, #fcff66 50%, #47ff80 50%);
-			background: -o-linear-gradient(right, #fcff66 50%, #47ff80 50%);
-			background: linear-gradient(to left, #fcff66 50%, #47ff80 50%);
+			outline: none;
+			background: -webkit-linear-gradient(right, $yellow 50%, #47ff80 50%);
+			background: -o-linear-gradient(right, $yellow 50%, #47ff80 50%);
+			background: linear-gradient(to left, $yellow 50%, #47ff80 50%);
 		    background-size: 200% 100%;
 		    background-position: right bottom;
 			font-weight: 500;
@@ -61,7 +64,7 @@
 		.donate {
 			button {
 				height: 30px;
-			    background: #fcff66; 
+			    background: $yellow; 
 			    padding: 0 16px;
 			    color: black;
 			    font-weight: 500;
@@ -71,7 +74,7 @@
 			    cursor: pointer;
 
 			    &:hover {
-			    	background: #66ff6b;
+			    	background: #47ff80;
 			    }
 			}
 		}
@@ -80,6 +83,45 @@
 	.SizesField {
 		display: flex;
 		flex-direction: column;
+
+		.WidthHeight {
+
+			.auto-box {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+
+				.lock-field {
+					height: 25px;
+				    display: flex;
+				    justify-content: center;
+				    padding-top: 5px;
+				    border-radius: 4px;
+					cursor: pointer;
+
+				    .lockratio {
+					    padding: 2px 2px 1px 3px;
+					    border-radius: 4px;
+	
+					    &:hover {
+							background: $yellow;
+					    }
+				    }
+				}
+
+				input:checked ~ .lockratio {
+					background: $yellow;
+				}
+
+				input {
+					position: absolute;
+				    opacity: 0;
+				    cursor: pointer;
+				    height: 0;
+				    width: 0;
+				}
+			}
+		}
 
 		.check-field {
 			padding: 0 30px;
@@ -251,10 +293,10 @@
 		padding: 5px 0;
 	}
 
-	.TwoInputs {
-		padding: 0 30px;
+	.TwoInputs, .WidthHeight {
+		padding: 0 0;
 		display: grid;
-		grid-template-columns: 1fr 0.1fr 1fr;
+		grid-template-columns: 30px 1fr 0.1fr 1fr 30px;
 		margin-bottom: 30px;
 
 		.lock-ratio {
@@ -263,7 +305,7 @@
 			justify-content: center;
 			height: 7px;
 			margin-top: 13px;
-			background: #fcff66;
+			background: $yellow;
 
 			&:before {
 				content: "";

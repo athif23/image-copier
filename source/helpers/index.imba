@@ -6,6 +6,14 @@ export class Utils
 	###
 	def self.capitalize(str)
 		str[0].toUpperCase + str.slice(1)
+
+	# * Numeral formatter
+	def formatInput e
+		if e:target:value === "" || e:target:value === 0
+			e:target:value = "0"
+		if e:target:value === '00'
+			e:target:value = "0"
+		e:target:value = e:target:value.replace(/[A-Za-z]/g, '').replace(/\-/g, '').replace(/^(-)?0+(?=\d)/, '$1')
 		
 	### 
 	* Convert to any unit

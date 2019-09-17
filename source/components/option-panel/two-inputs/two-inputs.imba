@@ -1,4 +1,4 @@
-import { UnitsButton } from '../units-button/units-button'
+import { UnitsButton } from './units-button/units-button'
 const _ = require('../../../helpers'):Utils
 
 export tag TwoInputs
@@ -23,12 +23,12 @@ export tag TwoInputs
 
 	def render
 		<self>
-			<.{@firstName} .input>
+			<.{@firstName} .input css:grid-column="2">
 				<label.label for="{@firstName}"> "{_.capitalize(@firstName)}"
 				<input@first[@firstI:value] .{@firstName} name="{@firstName}" type="text" value="0">
 				<UnitsButton data=(@firstI)>
 			<.space>
-			<.{@secondName} .input>
+			<.{@secondName} .input css:grid-column="4">
 				<label.label for="{@secondName}"> "{_.capitalize(@secondName)}"
 				<input@second[@secondI:value] .{@secondName} name="{@secondName}" type="text" value="0">
 				<UnitsButton data=(@secondI)>

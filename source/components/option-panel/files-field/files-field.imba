@@ -1,6 +1,5 @@
 const _ = require('../../../helpers'):Utils
-import { FileInput } from '../file-input/file-input'
-
+import { FileInput } from './file-input/file-input'
 
 export tag FilesField
 	def mount

@@ -28,7 +28,7 @@ export class PaperS extends Konva.Shape {
 
 	/* Convert config's unit to @unit. 
 	   Used in jsPDF's renderer */
-	_convertedThis(unit) {
+	_convertThis(unit) {
 		// We don't want to change the real config, as it's need to be always px.
 		return {
 			size: {
@@ -385,7 +385,7 @@ export class PaperS extends Konva.Shape {
 			putOnlyUsedFonts: true
 		});
 
-		let { margin, space, size } = this._convertedThis(this.unit);
+		let { margin, space, size } = this._convertThis(this.unit);
 		const image = this.image.convertPX(this.unit);
 
 		if (image.file.result) {

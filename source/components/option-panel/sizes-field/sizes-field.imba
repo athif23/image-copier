@@ -1,5 +1,6 @@
 const _ = require('../../../helpers'):Utils
 import { TwoInputs } from '../two-inputs/two-inputs'
+import { WidthHeight } from './width-height/width-height'
 
 export tag SizesField
 	def mount
@@ -84,6 +85,7 @@ export tag SizesField
 	def onchange
 		data.@paper.autoFill = data.@autoFill
 		data.@paper.lockAspectRatio = data.@lockRatio
+		data.@paper.justifyContent = data.@justifyContent
 
 		if data.@autoFill
 			document.querySelector('input.copies').setAttribute('disabled', true)
@@ -103,14 +105,14 @@ export tag SizesField
 
 	def render
 		<self>
-			<TwoInputs firstName="width" firstI=(data.@sizes:width) secondName="height" secondI=(data.@sizes:height)>
+			<WidthHeight[data] widthName="width" widthI=(data.@sizes:width) heightName="height" heightI=(data.@sizes:height)>
 			<TwoInputs firstName="space" firstI=(data.@space) secondName="margin" secondI=(data.@margin)>
 			<.check-field>
 				<label.auto-field> "Auto Fill"
 					<input[data.@autoFill] type="checkbox">
 					<span.autofill>
 				<.space>
-				<label.lock-field> "Lock Ratio"
-					<input[data.@lockRatio] type="checkbox">
-					<span.lockratio>
+				<label.justify-field> "Justify Images"
+					<input[data.@justifyContent] type="checkbox">
+					<span.justifycontent>
 			<.separator> <div>

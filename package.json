@@ -7,21 +7,22 @@
     "watch": "webpack --watch --progress --colors --display-modules"
   },
   "dependencies": {
-    "css-loader": "^1.0.1",
-    "extract-text-webpack-plugin": "^4.0.0-beta.0",
-    "imba": "1.4.1",
+    "imba": "1.4.7",
     "jspdf": "^1.5.3",
-    "konva": "^3.3.2",
-    "lodash": "^4.17.15",
+    "konva": "^4.0.10",
     "normalize-scss": "^7.0.1",
-    "style-loader": "^0.23.1",
     "webpack-dev-server": "^3.1.10"
   },
   "devDependencies": {
-    "node-sass": "^4.10.0",
-    "parcel-bundler": "^1.12.3",
-    "sass-loader": "^7.1.0",
-    "webpack": "^4.26.0",
-    "webpack-cli": "^3.1.2"
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.2.0",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.8.0",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^8.0.0",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.40.2",
+    "webpack-cli": "^3.3.9"
   }
 }

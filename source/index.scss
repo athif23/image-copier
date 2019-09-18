@@ -1,24 +1,7 @@
+// Global Variables
+$yellow: #fcff66;
+$green: #47ff80;
+$pink: #ffeaea;
+$red: #ff5a5a;
+
 @import "./components/app";
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p {
-	padding: 0;
-	margin: 0;
-}
-
-body {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin: 0;
-	padding: 0;
-	h1 {
-		padding: 0;
-		margin: 0;
-	}
-}

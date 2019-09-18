@@ -1,77 +1,20 @@
 @import "./option-panel/option-panel";
 @import "./preview-panel/preview-panel";
 
-* {
-	font-family: "Roboto Mono", monospace;
-}
-
 .App {
 	width: 100%;
 	height: 100vh;
 	display: flex;
-	font-family: "Roboto Mono", monospace;
-
-	h1 {
-		font-size: 25px;
-		padding: 18px 0 0 29px;
-		font-weight: 500;
-	}
 
 	.small-arrow {
 		width: 0;
-	    position: absolute;
 	    height: 0;
 	    top: 30px;
 	    left: -15px;
+	    position: absolute;
 	    border-top: 10px solid transparent;
 	    border-bottom: 10px solid transparent;
-	    border-right: 10px solid #ff5a5a;
-	}
-
-	// When sizes input or copies input on warning
-	.warning{
-	    color: #ffeaea;
-		label {
-			background-color: #ff2121 !important;
-		}
-
-		input {
-		    color: #ffeaea 			  !important;
-		    border-color: #ff2121     !important;
-			background-color: #ff5a5a !important;
-		}
-
-		details {
-			color: #ffeaea !important;
-			summary {
-				border-color: #ff2121     !important;
-				background-color: #ff5a5a !important;
-			}
-		}
-	}
-
-	.alertBox {
-		position: absolute;
-	    background-color: #ff2121;
-	    border-radius: 4px;
-	    z-index: 99;
-	    word-break: break-word;
-	    width: 283px;
-	    font-size: 14px;
-	    text-align: inherit;
-	    color: white;
-	    padding: 10px 13px;
-	    border: 6px solid #ff5a5a;
-	    cursor: pointer;
-	    .small-info {
-	    	font-size: 10px;
-		    font-style: italic;
-		    color: #ffebeb;
-		    margin-top: 9px;
-		    border-radius: 9px;
-		    padding: 5px 3px;
-		    text-align: center;
-	    }
+	    border-right: 10px solid $red;
 	}
 
 	input[type="text"],
@@ -89,16 +32,10 @@
 		outline: none;
 	}
 
-	input.warning:focus {
-		background-color: #ff5a5a;
-	    color: #ffeaea;
-	    border-color: #ff2121 !important;
-	}
-
 	.two-inputs {
-		padding: 0 30px;
+		padding: 0 0;
 		display: grid;
-		grid-template-columns: 1fr 0.1fr 1fr;
+		grid-template-columns: 30px 1fr 0.1fr 1fr 30px;
 		margin-bottom: 30px;
 
 		.input {

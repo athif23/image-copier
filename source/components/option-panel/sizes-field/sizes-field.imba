@@ -1,6 +1,6 @@
 const _ = require('../../../helpers'):Utils
-import { TwoInputs } from '../two-inputs/two-inputs'
 import { WidthHeight } from './width-height/width-height'
+import { SpaceMargin } from './space-margin/space-margin'
 
 export tag SizesField
 	def mount
@@ -66,53 +66,21 @@ export tag SizesField
 		elif evt:target:className === 'second height'
 			@currentInput = "height"
 
-		# Check if sizes are bigger than the paper
-		if data.@paper:_overSize
-			data.@paper._showAlertBox('size', "Size is too big! This paper can't contain it.", "Use bigger paper or just make image smaller.")
-		else
-			let alertBox = self.@dom.querySelector('.alertBox')
-			alertBox && alertBox.remove()
-			self.@dom:classList.remove('warning')
-
-		# Check if sizes is lower than 1
-		if data.@paper:image.width() <= 0 || data.@paper:image.height() <= 0
-			data.@paper._showAlertBox('size', "Sizes is too small.", "Sizes can't be lower than 1. (Not even 0.99)")
-		else
-			let alertBox = self.@dom.querySelector('.alertBox')
-			alertBox && alertBox.remove()
-			self.@dom:classList.remove('warning')
-
 	def onchange
 		data.@paper.autoFill = data.@autoFill
 		data.@paper.lockAspectRatio = data.@lockRatio
 		data.@paper.justifyContent = data.@justifyContent
 
-		if data.@autoFill
-			document.querySelector('input.copies').setAttribute('disabled', true)
-			document.querySelector('input.copies').setAttribute('style', "cursor: not-allowed")
-			(data.@paper:_removeCopiesAlert && data.@paper._removeCopiesAlert())
-		else
-			document.querySelector('input.copies').removeAttribute('disabled')
-			document.querySelector('input.copies').setAttribute('style', "cursor: auto")
-
-		let space = self.@dom:firstElementChild.querySelector('.space')
-		if data.@lockRatio
-			space:classList.add('lock-ratio')
-		else
-			space:classList.remove('lock-ratio')
-
-		data.@stage.batchDraw()
-
 	def render
 		<self>
-			<WidthHeight[data] widthName="width" widthI=(data.@sizes:width) heightName="height" heightI=(data.@sizes:height)>
-			<TwoInputs firstName="space" firstI=(data.@space) secondName="margin" secondI=(data.@margin)>
-			<.check-field>
-				<label.auto-field> "Auto Fill"
+			<WidthHeight[data]>
+			<SpaceMargin[data]>
+			<.checkbox-field>
+				<label #auto-fill> "Auto Fill"
 					<input[data.@autoFill] type="checkbox">
-					<span.autofill>
-				<.space>
-				<label.justify-field> "Justify Images"
+					<span>
+				<#space>
+				<label #justify-content> "Justify Images"
 					<input[data.@justifyContent] type="checkbox">
-					<span.justifycontent>
-			<.separator> <div>
+					<span>
+			<.separator>

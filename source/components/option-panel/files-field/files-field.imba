@@ -21,15 +21,15 @@ export tag FilesField
 			@copies.@dom:parentNode:classList.remove('warning')
 			
 	def render
-		<self>
-			<.images-input .two-inputs>
-				<.density .double>
+		<self css:padding="5px 0">
+			<.files-field .two-inputs>
+				<.density .double css:grid-column="2">
 					<label.label for="density"> "DPI"
 					<input@density[data.@density:value] .hidden-input name="density" type="text" maxlength="4">
-				<.space>
-				<.copies .double>
+				<#space>
+				<.copies .double css:grid-column="4">
 					<label.label for="copies"> "Copies"
-					<input@copies[data.@copies:value] :click.checkAlert .hidden-input name="copies" type="text" maxlength="4">
+					<input@copies[data.@copies:value] :click.checkAlert .hidden-input name="copies" type="text" maxlength="4" disabled=(data.@autoFill)>
 			<.format>
 				<label.label for="format"> "Format"
 				<input@formatpaper[data.@format:value] name="format" type="text" maxlength="4">

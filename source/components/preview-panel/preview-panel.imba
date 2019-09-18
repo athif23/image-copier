@@ -3,6 +3,7 @@ const Konva = require('konva')
 
 export tag PreviewPanel
 	def mount
+		@timer = 0
 		window.addEventListener('resize', do |e| self.resizeCanvas(e))
 
 		const selfH = self.@dom:clientHeight
@@ -28,12 +29,14 @@ export tag PreviewPanel
 		)
 
 	def resizeCanvas(e)
-		const selfW = self.@dom:clientWidth
-		const selfH = self.@dom:clientHeight
+		clearTimeout(@timer)
+		@timer = setTimeout(&, 550) do
+			const selfW = self.@dom:clientWidth
+			const selfH = self.@dom:clientHeight
 
-		data.@stage.width(selfW)
-		data.@stage.height(selfH)
-		data.@stage.batchDraw()
+			data.@stage.width(selfW)
+			data.@stage.height(selfH)
+			data.@stage.batchDraw()
 
 	def render
 		<self>

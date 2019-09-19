@@ -14,11 +14,17 @@ export class Stores
 	prop autoFill     # -> Check if auto fill is true, if it's then fill the space automatically
 	prop lockRatio    # -> Check if lock ratio is true, if it's then lock ratio of the images
 	prop paper        # -> An Instance of Paper class to pass to the canvas
-	prop canvas       # -> Canvas instance
+	prop isError	  # -> Is error happened?
+	prop errorMessage # -> What's the message
+	prop errorBoxPos  # -> Position of error's box
 	prop justifyContent	# -> Make sure the space between images is balanced
 
 	# * Initialize the store
 	def initialize
+		@timer = 0 # for debounce function 
+		@errorBoxPos = 372 # Original position
+		@currentInput = 'width'
+
 		@sizes = {
 			height: { value: "10", unit: "px" },
 			width:  { value: "10", unit: "px" }
@@ -29,9 +35,13 @@ export class Stores
 		@copies = { value: "323" }
 		@density = { value: "72" }
 		@format = { value: "A4", width: 210, height: 297, unit: 'mm' }
-		@justifyContent = false
+
+		@errorMessage = "Paper is too small!"
+		@isError = false
 		@lockRatio = false
 		@autoFill = false
+		@justifyContent = false
+
 		@image = Image.new({
 			width: _.convertTo({from: @sizes:width:unit, to: 'px'}, @sizes:width:value, @density:value),
 			height: _.convertTo({from: @sizes:height:unit, to: 'px'}, @sizes:height:value, @density:value)
@@ -63,4 +73,57 @@ export class Stores
 
 	# * Generates a pdf file
 	def generatePdf 
-		self.@paper.printPDF(self.@filename:value)
+		@paper._printPDF(@filename:value)
+
+	# * Checking if there's something we don't want to be inputted
+	def checkError
+		let width = _.convertTo({from: @sizes:width:unit, to: 'px'}, @sizes:width:value, @density:value)
+		let height = _.convertTo({from: @sizes:height:unit, to: 'px'}, @sizes:height:value, @density:value)
+
+		if (width <= 0) && (height <= 0)
+			@errorMessage = "Image sizes can't be zero or less!"
+			return @isError = true
+		elif width <= 0
+			@errorMessage = "Width can't be zero or less!"
+			return @isError = 'width'
+		elif height <= 0
+			@errorMessage = "Height can't be zero or less!"
+			return @isError = 'height'
+		elif parseInt(@copies:value) > @paper:_copiesLimit
+			@errorMessage = "Paper is too small!"
+			return @isError = 'copies'
+
+		return @isError = false
+
+	# * Check typing in sizes (width and height) input
+	def checkType
+		self.checkError()
+		Imba.commit
+
+		let width = _.convertTo({from: @sizes:width:unit, to: 'px'}, @sizes:width:value, @density:value)
+		let height = _.convertTo({from: @sizes:height:unit, to: 'px'}, @sizes:height:value, @density:value)
+		if (width <= 0) || (height <= 0)
+			return
+
+		# Debounced the render function
+		clearTimeout(@timer)
+		@timer = setTimeout(&, 550) do
+			if @lockRatio && @currentInput === "width"
+				@sizes:height:value = "{width * @paper:image:origHeight / @paper:image:origWidth}"
+			elif @lockRatio && @currentInput === "height"
+				@sizes:width:value = "{height * @paper:image:origWidth / @paper:image:origHeight}"
+			
+			@paper.imageSize = {
+				width: _.convertTo({from: @sizes:width:unit, to: 'px'}, @sizes:width:value, @density:value),
+				height: _.convertTo({from: @sizes:height:unit, to: 'px'}, @sizes:height:value, @density:value)
+			}
+			@paper.margin = {
+				x: _.convertTo({from: @margin:unit, to: 'px'}, @margin:value, @density:value),
+				y: _.convertTo({from: @margin:unit, to: 'px'}, @margin:value, @density:value)
+			}
+			@paper.space = {
+				x: _.convertTo({from: @space:unit, to: 'px'}, @space:value, @density:value),
+				y: _.convertTo({from: @space:unit, to: 'px'}, @space:value, @density:value)
+			}
+			@stage.batchDraw()
+			Imba.commit()

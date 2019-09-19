@@ -127,7 +127,6 @@ export class PaperS extends Konva.Shape {
 		if (justifyContent) {
 			totalImagesInColumn = (imagesInRC * imgH) + (imagesInC * (imgW));
 			newSpaceX = (paperSizeW - totalImagesInColumn) / (imagesInRC + imagesInC - 1);
-			console.log(paperSizeW, totalImagesInColumn)
 		}
 
 		return {
@@ -263,15 +262,6 @@ export class PaperS extends Konva.Shape {
 			remainSpace,
 		} = this._calculateRender(ispdf, config);
 
-		this._overSize = false;
-		(this._removeSizeAlert && this._removeSizeAlert());
-
-		if (imagesInC <= 0 && imagesInRC <= 0) {
-			this._overSize = true;
-			this._removeSizeAlert = this._showAlertBox('size', "Size is too big! This paper can't contain it.", "Use bigger paper or just make image smaller.");
-			return;
-		}
-
 		(!ispdf && (this._groupOfImages = new Konva.Group()));
 
 		let copies = this.copies,
@@ -281,10 +271,7 @@ export class PaperS extends Konva.Shape {
 
 		// If there's something to copy
 		if (copies > 0) {
-			// Save the copies limit to check on "files-field.imba"
 			this._copiesLimit = imagesInC * imagesInR + imagesInRR * imagesInRC;
-
-			// (this._removeCopiesAlert && this._removeCopiesAlert());
 
 			// Normal
 			for (let i = 1; i <= this.copies; i++) {
@@ -316,12 +303,29 @@ export class PaperS extends Konva.Shape {
 
 				copies--;
 			}
+			
+			this._checkErrorBox = document.querySelector(".FilesField").getElementsByClassName("warning-box")[0];
+			if (!this._checkErrorBox && this.copies > this._copiesLimit) {
+				this._errorBox = document.createElement("div");
+				this._errorBox.classList.add("warning-box");
+
+				let p = document.createElement("p"),
+					msg = document.createTextNode("Paper is too small!");
+				
+				p.appendChild(msg);
+				this._errorBox.appendChild(p);
+
+				// Append to body
+				document.querySelector(".files-field").appendChild(this._errorBox);
+			} else if (this.copies < this._copiesLimit) {
+				this._errorBox && this._errorBox.remove()
+				this._checkErrorBox && this._checkErrorBox.remove();
+			}
 
 			// Rotated
 			posY = ispdf ? (y + margin.y - image.height()) : (y + margin.y);
 			for (let i = 1; i <= copies; i++) {
 				if (i > (imagesInRC * imagesInRR)) {
-					// this._removeCopiesAlert = this._showAlertBox('copies');
 					break;
 				}
 				if (!ispdf) {
@@ -414,7 +418,7 @@ export class PaperS extends Konva.Shape {
 		let oldScale = this.getStage().scaleX(),
 			pointerPos;
 
-		if (oldScale > 2 && this.isCached) {
+		if (oldScale > 2 && this.isCached && this._groupOfImages) {
 			this._groupOfImages.clearCache();
 		} else if (this.isCached && this._groupOfImages){
 			this._groupOfImages.cache();

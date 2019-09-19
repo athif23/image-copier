@@ -22,10 +22,10 @@ export class Utils
 	* @object options -> "from" unit and "to" unit to select which unit to convert to
 	* >> @number
 	###
-	def self.convertTo(options = {  from: "cm", to: "px" }, number = 1, dpi = 72)
+	def self.convertTo(options = {  from: "cm", to: "px" }, number = 1, dpi = 72, rounded = false)
 		if number isa String || dpi isa String
-			number = parseInt(number)
-			dpi = parseInt(dpi)
+			number = parseFloat(number) || 0
+			dpi = parseFloat(dpi) || 0
 
 		# Convert to "px"
 		if options:from === "px"
@@ -41,7 +41,7 @@ export class Utils
 		elif options:from === "cm"
 			switch options:to
 				when "px"
-					return ((dpi / 2.54) * number)
+					return !rounded ? ((dpi / 2.54) * number) : Math.round((dpi / 2.54) * number)
 				when "mm"
 					return (number * 10)
 				else
@@ -51,7 +51,7 @@ export class Utils
 		elif options:from === "mm"
 			switch options:to
 				when "px"
-					return ((dpi / 25.4) * number)
+					return !rounded ? ((dpi / 25.4) * number) : Math.round((dpi / 25.4) * number)
 				when "cm"
 					return (number / 10)
 				else

@@ -5,9 +5,9 @@ export tag WidthHeight
 	def render
 		let isLock = data.@lockRatio ? '8M4 4V8' : '8'
 		<self.two-inputs>
-			<UnitInput inputName="width" inputI=(data.@sizes:width) css:grid-column="2">
+			<UnitInput[data] .warning=(data.@isError is 'width' || data.@isError is true) inputName="width" inputI=(data.@sizes:width) css:grid-column="2">
 			<#space .lock-sign=(data.@lockRatio)>
-			<UnitInput inputName="height" inputI=(data.@sizes:height) css:grid-column="4">
+			<UnitInput[data] .warning=(data.@isError is 'height' || data.@isError is true) inputName="height" inputI=(data.@sizes:height) css:grid-column="4">
 			<#lock-box css:display="flex" css:justify-content="center" css:align-items="center">
 				<label.lock-field> 
 					<input[data.@lockRatio] type="checkbox">

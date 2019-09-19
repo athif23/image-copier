@@ -4,10 +4,17 @@ const _ = require('../../../helpers'):Utils
 export tag UnitInput
 	prop inputName
 	prop inputI
+	prop lastUnit
 
 	def mount
-		@input.@dom.addEventListener('input', self:formatInput)
-		@input.@dom.addEventListener('blur', self:formatInput)
+		@lastUnit = 'px'
+		@input.@dom.addEventListener('input', self:formatInput, false)
+		@input.@dom.addEventListener('blur', self:formatInput, false)
+
+	def onchange
+		data.@sizes[@inputName]:value = _.convertTo({from: @lastUnit, to: @inputI:unit}, data.@sizes[@inputName]:value, 72, true)
+		data.checkType()
+		@lastUnit = data.@sizes[@inputName]:unit
 
 	# Numeral formatter
 	def formatInput e
@@ -18,8 +25,7 @@ export tag UnitInput
 		e:target:value = e:target:value.replace(/[A-Za-z]/g, '').replace(/\-/g, '').replace(/^(-)?0+(?=\d)/, '$1')
 
 	def render
-		<self>
-			<.{@inputName} .input>
-				<label.label for="{@inputName}"> "{_.capitalize(@inputName)}"
-				<input@input[@inputI:value] .{@inputName} name="{@inputName}" type="text" value="0">
-				<UnitsButton data=(@inputI)>
+		<self .{@inputName} .input>
+			<label.label for="{@inputName}"> "{_.capitalize(@inputName)}"
+			<input@input[@inputI:value] .{@inputName} name="{@inputName}" type="text" value="0">
+			<UnitsButton dataInput=(@inputI)>

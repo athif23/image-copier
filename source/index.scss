@@ -1,4 +1,10 @@
+@import './js/cropperjs/cropper';
+
 // Global Variables
+$mobile: "screen and (max-width : 444px)";
+$tablet: "screen and (min-width : 445px) and (max-width : 949px)";
+$laptop: "screen and (min-width : 950px)";
+
 $yellow: #fcff66;
 $green: #47ff80;
 $pink: #ffeaea;

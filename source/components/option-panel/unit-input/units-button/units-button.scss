@@ -1,9 +1,21 @@
 details.UnitsButton {
-  display: inline-block;
-  width: 33px;
-  position: relative;
-  color: #454545;
-  height: 30px;
+    display: inline-block;
+    width: 33px;
+    position: relative;
+    color: #454545;
+    height: 100%;
+
+    @media #{$mobile} {
+      display: none;
+    }
+
+    @media #{$tablet} {
+      display: inline-block;
+    }
+
+    @media #{$laptop} {
+      display: inline-block;
+    }
 }
 
 details.UnitsButton[open] {
@@ -16,8 +28,7 @@ details.UnitsButton summary {
   justify-content: center;
   padding-top: 5px;
   box-sizing: border-box;
-  height: 35px;
-  font-size: 14px;
+  height: 100%;
   background: white;
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px;
@@ -25,6 +36,19 @@ details.UnitsButton summary {
   border: 2px solid black;
   border-left: none;
   user-select: none;
+
+  @media #{$mobile} {
+      border-bottom-right-radius: 0px; 
+      border-top-right-radius: 0px;
+  }
+
+  @media #{$tablet} {
+    font-size: 15px;
+  }
+
+  @media #{$laptop} {
+    font-size: 12px;
+  }
 }
 
 details.UnitsButton summary::-webkit-details-marker {

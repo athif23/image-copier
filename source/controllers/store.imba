@@ -16,13 +16,13 @@ export class Stores
 	prop paper        # -> An Instance of Paper class to pass to the canvas
 	prop isError	  # -> Is error happened?
 	prop errorMessage # -> What's the message
-	prop errorBoxPos  # -> Position of error's box
 	prop justifyContent	# -> Make sure the space between images is balanced
+	prop optionVisible  # -> Check whether option panel visible or not
+	prop cropBoxVisible # -> Check whether crop box visible or not
 
 	# * Initialize the store
 	def initialize
 		@timer = 0 # for debounce function 
-		@errorBoxPos = 372 # Original position
 		@currentInput = 'width'
 
 		@sizes = {
@@ -41,6 +41,9 @@ export class Stores
 		@lockRatio = false
 		@autoFill = false
 		@justifyContent = false
+
+		@optionVisible = true
+		@cropBoxVisible = false
 
 		@image = Image.new({
 			width: _.convertTo({from: @sizes:width:unit, to: 'px'}, @sizes:width:value, @density:value),

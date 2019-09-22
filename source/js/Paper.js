@@ -124,6 +124,8 @@ export class PaperS extends Konva.Shape {
 			imagesInRR = paperSizeH === imgW ? 1 : Math.trunc(paperSizeH / (imgW + space.y));
 		}
 
+		newSpaceX = space.x;
+
 		if (justifyContent) {
 			totalImagesInColumn = (imagesInRC * imgH) + (imagesInC * (imgW));
 			newSpaceX = (paperSizeW - totalImagesInColumn) / (imagesInRC + imagesInC - 1);
@@ -453,6 +455,56 @@ export class PaperS extends Konva.Shape {
 		this.getStage().position(newPos)
 		this.getStage().batchDraw()
 	}
+
+	_zoomMobile(e) {
+		const t1 = e.evt.touches[0];
+		const t2 = e.evt.touches[1];
+
+		function clientPointerRelativeToStage(clientX, clientY, stage) {
+			return {
+				x: clientX - stage.getContent().offsetLeft,
+				y: clientY - stage.getContent().offsetTop,
+			}
+		}
+
+		if (t1 && t2) {
+			evt.preventDefault();
+			evt.stopPropagation();
+
+			const oldScale = this.getStage().scaleX();
+			const dist = getDistance(
+				{ x: t1.clientX, y: t1.clientY },
+				{ x: t2.clientX, y: t2.clientY }
+			);
+
+			if (!this._lastDist) this._lastDist = dist;
+			const delta = dist - this._lastDist;
+
+			const px = (t1.clientX + t2.clientX) / 2;
+			const py = (t1.clientY + t2.clientY) / 2;
+			const pointer = this._point || clientPointerRelativeToStage(px, py, this.getStage());
+			if (!this._point) this._point = pointer;
+
+			const startPos = {
+				x: pointer.x / oldScale - this.getStage().x() / oldScale,
+				y: pointer.y / oldScale - this.getStage().y() / oldScale,
+			};
+
+			this._scaleBy = 1.01 + Math.abs(delta) / 100;
+			const newScale = delta < 0 ? oldScale / this._scaleBy : oldScale * this._scaleBy;
+			this.getStage().scale({ x: newScale, y: newScale });
+
+			const newPosition = {
+				x: (pointer.x / newScale - startPos.x) * newScale,
+				y: (pointer.y / newScale - startPos.y) * newScale,
+			};
+
+			this.getStage().position(newPosition);
+			this.getStage().batchDraw();
+			this._lastDist = dist;
+		}
+	}
+
 
 	/* SETTER FUNCTIONS */
 	setDpi(val) { 

@@ -7,8 +7,12 @@ export class Utils
 	def self.capitalize(str)
 		str[0].toUpperCase + str.slice(1)
 
+	# * Check whether element visible or not
+	def self.isVisible(elem)
+		return !!( elem:offsetWidth || elem:offsetHeight || elem:getClientRects():length )
+
 	# * Numeral formatter
-	def formatInput e
+	def self.formatInput(e)
 		if e:target:value === "" || e:target:value === 0
 			e:target:value = "0"
 		if e:target:value === '00'
@@ -56,3 +60,7 @@ export class Utils
 					return (number / 10)
 				else
 					return number
+
+	# * Get distance between two point
+	def self.getDistance(p1, p2)
+		return Math.sqrt(Math.pow((p2:x - p1:x), 2) + Math.pow((p2:y - p1:y), 2));

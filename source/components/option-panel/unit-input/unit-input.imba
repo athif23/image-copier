@@ -12,9 +12,10 @@ export tag UnitInput
 		@input.@dom.addEventListener('blur', self:formatInput, false)
 
 	def onchange
-		data.@sizes[@inputName]:value = _.convertTo({from: @lastUnit, to: @inputI:unit}, data.@sizes[@inputName]:value, 72, true)
-		data.checkType()
-		@lastUnit = data.@sizes[@inputName]:unit
+		if @inputName is 'width' || @inputName is 'height'
+			data.@sizes[@inputName]:value = _.convertTo({from: @lastUnit, to: @inputI:unit}, data.@sizes[@inputName]:value, 72, true)
+			@lastUnit = data.@sizes[@inputName]:unit
+			data.checkType()
 
 	# Numeral formatter
 	def formatInput e
@@ -27,5 +28,5 @@ export tag UnitInput
 	def render
 		<self .{@inputName} .input>
 			<label.label for="{@inputName}"> "{_.capitalize(@inputName)}"
-			<input@input[@inputI:value] .{@inputName} name="{@inputName}" type="text" value="0">
+			<input@input[@inputI:value] .{@inputName} name="{@inputName}" type="text" value="0" .last-input=(@inputName is 'height' || @inputName is 'margin')>
 			<UnitsButton dataInput=(@inputI)>

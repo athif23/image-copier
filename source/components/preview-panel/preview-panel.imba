@@ -4,6 +4,9 @@ const Konva = require('konva')
 export tag PreviewPanel
 	def mount
 		@timer = 0
+		let changeWidth = window.matchMedia('(min-width : 950px)')
+		self.onChangeWidth(changeWidth)
+		changeWidth.addListener(do self:onChangeWidth(changeWidth))
 		window.addEventListener('resize', do |e| self.resizeCanvas(e))
 
 		const selfH = self.@dom:clientHeight
@@ -28,6 +31,24 @@ export tag PreviewPanel
 			data.@paper._zoom(state)
 		)
 
+		data.@stage.on('touchmove', do |e|
+			data.@paper._zoomMobile(e)
+		)
+
+		data.@stage.on('touchend', do |e|
+			data.@paper:_lastDist = 0
+			data.@paper:_point = undefined
+		)
+
+	def onChangeWidth(x)
+		let previewPanel = document.querySelector('.PreviewPanel')
+		if x:matches
+			previewPanel:style:display = "flex"
+			data.@optionVisible = true
+			Imba.commit()
+		else
+			previewPanel:style:display = "none" if data.@optionVisible = true
+
 	def resizeCanvas(e)
 		clearTimeout(@timer)
 		@timer = setTimeout(&, 550) do
@@ -38,8 +59,16 @@ export tag PreviewPanel
 			data.@stage.height(selfH)
 			data.@stage.batchDraw()
 
+	def backToOption
+		let previewPanel = document.querySelector('.PreviewPanel')
+		if (_.isVisible(previewPanel))
+			previewPanel:style:display = "none"
+			data.@optionVisible = true
+			Imba.commit()
+
 	def render
 		<self>
+			<button.back-option :click.backToOption> "Back"
 			<#container>
 			<.zoom-tools>
 				<button.out :click=(do data.@paper._zoom('out', true))> "-"

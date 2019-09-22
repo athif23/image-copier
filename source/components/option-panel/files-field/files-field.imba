@@ -11,6 +11,20 @@ export tag FilesField
 		data.@stage.batchDraw()
 		data.checkError()
 
+	def showPreview
+		let previewPanel = document.querySelector('.PreviewPanel')
+		if !(_.isVisible(previewPanel))
+			const selfW = self.@owner_.@owner_.@dom:clientWidth
+			const selfH = self.@owner_.@owner_.@dom:clientHeight
+
+			data.@stage.width(selfW)
+			data.@stage.height(selfH)
+			data.@stage.batchDraw()
+
+			previewPanel:style:display = "flex"
+			data.@optionVisible = false
+			Imba.commit()
+
 	def render
 		<self css:padding="5px 0">
 			<.files-field .two-inputs>
@@ -20,11 +34,15 @@ export tag FilesField
 				<#space>
 				<.copies .double css:grid-column="4">
 					<label.label for="copies"> "Copies"
-					<input@copies[data.@copies:value] .hidden-input name="copies" type="text" maxlength="4" disabled=(data.@autoFill)>
+					<input@copies[data.@copies:value] .hidden-input name="copies" type="text" maxlength="4" .last-input disabled=(data.@autoFill)>
 				if data.@isError === 'copies'
 					<.warning-box>
 						<p> "{data.@errorMessage}"
 			<.format>
 				<label.label for="format"> "Format"
-				<input@formatpaper[data.@format:value] name="format" type="text" maxlength="4">
+				<input@formatpaper[data.@format:value] name="format" type="text" maxlength="4" .last-input>
 			<FileInput[data]>
+			if data.@paper:image:file
+				<.preview-container>
+					<button.preview :click.showPreview>
+						<p> "PREVIEW"

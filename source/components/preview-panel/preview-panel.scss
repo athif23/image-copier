@@ -4,6 +4,43 @@
 	box-sizing: content-box;
 	flex-grow: 1;
 
+	@media #{$mobile} {
+		display: none;
+	}
+
+	@media #{$tablet} {
+		display: none;
+	}
+
+	@media #{$laptop} {
+		display: flex;
+	}
+
+	.back-option {
+		position: fixed;
+	    bottom: 20px;
+	    left: 20px;
+	    padding: 5px 19px;
+	    background: $yellow;
+	    border: 2px solid black;
+	    color: black;
+	    font-size: 15px;
+	    border-radius: 4px;
+	    z-index: 99;
+
+		 @media #{$laptop} {
+		 	display: none;
+		 }
+
+		 @media #{$tablet} {
+		 	display: flex;
+		 }
+
+		 @media #{$mobile} {
+		 	display: flex;
+		 }
+	}
+
 	.paper {
 		background: white;
 	}

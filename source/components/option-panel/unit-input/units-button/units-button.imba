@@ -2,7 +2,7 @@ export tag UnitsButton < details
 	prop options
 	prop value
 	prop mouseDown
-	prop data
+	prop dataInput
 
 	def mount
 		@options = self.@dom.querySelectorAll(".select > .select__option")
@@ -87,7 +87,7 @@ export tag UnitsButton < details
 
 		that:parentNode:classList:add('active')
 
-		@data:unit = @value
+		@dataInput:unit = @value
 
 		self.@dom.dispatchEvent(Event.new('change'))
 

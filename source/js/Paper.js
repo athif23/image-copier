@@ -28,7 +28,7 @@ export class PaperS extends Konva.Shape {
 
 	/* Convert config's unit to @unit. 
 	   Used in jsPDF's renderer */
-	_convertedThis(unit) {
+	_convertThis(unit) {
 		// We don't want to change the real config, as it's need to be always px.
 		return {
 			size: {
@@ -102,30 +102,35 @@ export class PaperS extends Konva.Shape {
 		const x = !ispdf ? this.x() : 0,
 			  y = !ispdf ? this.y() : 0,
 			  width = ispdf ? config.size.width : this.width(),
-			  height = ispdf ? config.size.height : this.height();
+			  height = ispdf ? config.size.height : this.height(),
+			  imgH = image.height(),
+			  imgW = image.width();
 
 		const paperSizeW = width - margin.x * 2;
 		const paperSizeH = height - margin.y * 2;
 		
-		let imagesInC = Math.trunc(paperSizeW / (image.width() + space.x)), 
-			imagesInR = Math.trunc(paperSizeH / (image.height() + space.y)), 
+		let imagesInC = Math.trunc(paperSizeW / (imgW + space.x)), 
+			imagesInR = Math.trunc(paperSizeH / (imgH + space.y)), 
 			imagesInRC = 0,
-			imagesInRR = 0;
+			imagesInRR = 0,
+			newSpaceX = 0;
 		
-		let totalImagesInColumn = (imagesInC * (image.width() + space.x));
-		
+		let totalImagesInColumn = (imagesInC * (imgW + space.x));
 		let remainSpace = (paperSizeW - totalImagesInColumn);
+
 		// Do the remain space bigger or equal to image's height...
-		if (remainSpace >= image.height()) {
-			imagesInRC = remainSpace === image.height() ? 1 : Math.trunc(remainSpace / (image.height() + space.x));
-			imagesInRR = paperSizeH === image.width() ? 1 : Math.trunc(paperSizeH / (image.width() + space.y));
+		if (remainSpace >= imgH) {
+			imagesInRC = remainSpace === imgH ? 1 : Math.trunc(remainSpace / (imgH + space.x));
+			imagesInRR = paperSizeH === imgW ? 1 : Math.trunc(paperSizeH / (imgW + space.y));
 		}
 
+		newSpaceX = space.x;
+
 		if (justifyContent) {
-			totalImagesInColumn = (imagesInRC * image.height()) + (imagesInC * (image.width()));
-			space.x = (paperSizeW - totalImagesInColumn) / (imagesInRC + imagesInC - 1)
+			totalImagesInColumn = (imagesInRC * imgH) + (imagesInC * (imgW));
+			newSpaceX = (paperSizeW - totalImagesInColumn) / (imagesInRC + imagesInC - 1);
 		}
-		
+
 		return {
 			x,
 			y,
@@ -138,7 +143,11 @@ export class PaperS extends Konva.Shape {
 			imagesInC,
 			imagesInRC,
 			totalImagesInColumn,
-			remainSpace
+			remainSpace,
+			space: {
+				x: newSpaceX,
+				y: space.y
+			}
 		};
 	}
 
@@ -147,7 +156,7 @@ export class PaperS extends Konva.Shape {
 		if (this._groupOfImages && !this._isChanged) return;
 		this._groupOfImages && this._groupOfImages.destroy()
 
-		const { margin, space, image, justifyContent } = config;
+		const { margin, image, justifyContent } = config;
 
 		if (!!image.file === false) return;
 
@@ -156,6 +165,7 @@ export class PaperS extends Konva.Shape {
 			y,
 			width,
 			height,
+			space, /** Don't change space directly, return it here. */
 			paperSizeW,
 			paperSizeH,
 			imagesInR,
@@ -223,10 +233,8 @@ export class PaperS extends Konva.Shape {
 			}
 		}
 		
-		if (imagesInC * imagesInR > 25) {
-			this._groupOfImages.cache();
-			this.isCached = true;
-		}
+		this._groupOfImages.cache();
+		this.isCached = true;
 
 		(!ispdf && (shape.getLayer().add(this._groupOfImages)));
 		this._isChanged = false;
@@ -237,7 +245,7 @@ export class PaperS extends Konva.Shape {
 		if (this._groupOfImages && !this._isChanged) return;
 		this._groupOfImages && this._groupOfImages.destroy()
 
-		const { margin, space, image, justifyContent } = config;
+		const { margin, image, justifyContent } = config;
 
 		if (!!image.file === false) return;
 
@@ -246,6 +254,7 @@ export class PaperS extends Konva.Shape {
 			y,
 			width,
 			height,
+			space, /** Don't change space directly, return it here. */
 			paperSizeW,
 			paperSizeH,
 			imagesInR,
@@ -254,15 +263,6 @@ export class PaperS extends Konva.Shape {
 			imagesInRC,
 			remainSpace,
 		} = this._calculateRender(ispdf, config);
-
-		this._overSize = false;
-		(this._removeSizeAlert && this._removeSizeAlert());
-
-		if (imagesInC <= 0 && imagesInRC <= 0) {
-			this._overSize = true;
-			this._removeSizeAlert = this._showAlertBox('size', "Size is too big! This paper can't contain it.", "Use bigger paper or just make image smaller.");
-			return;
-		}
 
 		(!ispdf && (this._groupOfImages = new Konva.Group()));
 
@@ -273,9 +273,7 @@ export class PaperS extends Konva.Shape {
 
 		// If there's something to copy
 		if (copies > 0) {
-			// Save the copies limit to check on "files-field.imba"
 			this._copiesLimit = imagesInC * imagesInR + imagesInRR * imagesInRC;
-			(this._removeCopiesAlert && this._removeCopiesAlert());
 
 			// Normal
 			for (let i = 1; i <= this.copies; i++) {
@@ -307,12 +305,29 @@ export class PaperS extends Konva.Shape {
 
 				copies--;
 			}
+			
+			this._checkErrorBox = document.querySelector(".FilesField").getElementsByClassName("warning-box")[0];
+			if (!this._checkErrorBox && this.copies > this._copiesLimit) {
+				this._errorBox = document.createElement("div");
+				this._errorBox.classList.add("warning-box");
+
+				let p = document.createElement("p"),
+					msg = document.createTextNode("Paper is too small!");
+				
+				p.appendChild(msg);
+				this._errorBox.appendChild(p);
+
+				// Append to body
+				document.querySelector(".files-field").appendChild(this._errorBox);
+			} else if (this.copies < this._copiesLimit) {
+				this._errorBox && this._errorBox.remove()
+				this._checkErrorBox && this._checkErrorBox.remove();
+			}
 
 			// Rotated
 			posY = ispdf ? (y + margin.y - image.height()) : (y + margin.y);
 			for (let i = 1; i <= copies; i++) {
 				if (i > (imagesInRC * imagesInRR)) {
-					this._removeCopiesAlert = this._showAlertBox('copies');
 					break;
 				}
 				if (!ispdf) {
@@ -338,10 +353,8 @@ export class PaperS extends Konva.Shape {
 			}
 		}
 
-		if (imagesInC * imagesInR > 25) {
-			this._groupOfImages.cache();
-			this.isCached = true;
-		}
+		this._groupOfImages.cache();
+		this.isCached = true;
 
 		(!ispdf && (shape.getLayer().add(this._groupOfImages)));
 		this._isChanged = false;
@@ -357,17 +370,7 @@ export class PaperS extends Konva.Shape {
 		// Draw margin lines
 	    this._marginLines(shape)
 	    
-	    if (this.image.width() <= 0 || this.image.height() <= 0) {
-	    	this._zeroSize = this._showAlertBox('size', "Sizes is too small.", "Can't be lower than 1.")
-	    } else {
-	    	this._zeroSize && this._zeroSize()
-	    }
-
 		if (this.autoFill) {
-			// Remove alert box and warning style
-			this._removeCopiesAlert && this._removeCopiesAlert()
-			document.querySelector('div.copies').classList.remove('warning')
-
 			this._autoFillRenderer(shape, false, { margin, space, image: this.image, justifyContent });
 		} else if (!this.autoFill && this.copies >= 1) {
 			this._normalRenderer(shape, false, { margin, space, image: this.image, justifyContent });
@@ -385,7 +388,7 @@ export class PaperS extends Konva.Shape {
 			putOnlyUsedFonts: true
 		});
 
-		let { margin, space, size } = this._convertedThis(this.unit);
+		let { margin, space, size } = this._convertThis(this.unit);
 		const image = this.image.convertPX(this.unit);
 
 		if (image.file.result) {
@@ -400,14 +403,11 @@ export class PaperS extends Konva.Shape {
 			this._normalRenderer(jspdf, true, { size, margin, space, image, justifyContent: this.justifyContent });
 		}
 
-		let button = document.querySelector('.generate-button');
 		this._isLoading = true;
-		button.classList.add('loading')
 
 		// Just to make it a litle bit cooler
 		setTimeout(() => {
 			jspdf.save(`${filename}.pdf`, { returnPromise: true }).then(data => {
-				button.classList.remove('loading');
 				this._isLoading = false;
 				Imba.commit()
 			});
@@ -416,66 +416,13 @@ export class PaperS extends Konva.Shape {
 		this._isChanged = true;
 	}
 
-	// Creating alert box to element
-	_showAlertBox(elementId, text1, text2) {
-		let className = elementId
-		if (elementId === 'size') className = 'height';
-
-		let element = document.querySelector(`div.${className}`);
-		if (element && element.querySelector('div.alertBox')) element.querySelector('div.alertBox').remove()
-
- 		let alertBox = document.createElement('div');
-		alertBox.className = "alertBox";
-		alertBox.style.left = `${element.getBoundingClientRect().x + element.getBoundingClientRect().width + 15}px`;
-		alertBox.style.transform = "translateY(-30px)";
-
-		let p = document.createElement("p"),
-			p1 = document.createElement("p"),
-			warningText = document.createTextNode(text1 || "Too much! It's getting out of the paper."),
-			warningText1 = document.createTextNode(text2 || "Use 'Auto Fill' if you don't know the limit.")
-		
-		p1.className = "small-info";
-		p.appendChild(warningText)
-		p1.appendChild(warningText1)
-		alertBox.appendChild(p)
-		alertBox.appendChild(p1)
-
-		// <
-		let arrow = document.createElement('div');
-		arrow.className = 'small-arrow';
-
-		alertBox.appendChild(arrow);
-		element.appendChild(alertBox)
-
-		if (elementId === 'size') {
-			element.parentNode.classList.add('warning')
-		} else {
-			element.classList.add('warning');
-		}
-
-		alertBox.addEventListener('click', (e) => {
-			alertBox.remove();
-		})
-
-		// Return function to remove the alert box.
-		return () => {
-			alertBox.remove();
-
-			if (elementId === 'size') {
-				element.parentNode.classList.remove('warning');
-			} else {
-				element.classList.remove('warning');
-			}
-		}
-	}
-
 	_zoom(state, isBtn) {
 		let oldScale = this.getStage().scaleX(),
 			pointerPos;
 
-		if (oldScale > 2 && this.isCached) {
+		if (oldScale > 2 && this.isCached && this._groupOfImages) {
 			this._groupOfImages.clearCache();
-		} else if (this.isCached){
+		} else if (this.isCached && this._groupOfImages){
 			this._groupOfImages.cache();
 		}
 
@@ -508,6 +455,56 @@ export class PaperS extends Konva.Shape {
 		this.getStage().position(newPos)
 		this.getStage().batchDraw()
 	}
+
+	_zoomMobile(e) {
+		const t1 = e.evt.touches[0];
+		const t2 = e.evt.touches[1];
+
+		function clientPointerRelativeToStage(clientX, clientY, stage) {
+			return {
+				x: clientX - stage.getContent().offsetLeft,
+				y: clientY - stage.getContent().offsetTop,
+			}
+		}
+
+		if (t1 && t2) {
+			evt.preventDefault();
+			evt.stopPropagation();
+
+			const oldScale = this.getStage().scaleX();
+			const dist = getDistance(
+				{ x: t1.clientX, y: t1.clientY },
+				{ x: t2.clientX, y: t2.clientY }
+			);
+
+			if (!this._lastDist) this._lastDist = dist;
+			const delta = dist - this._lastDist;
+
+			const px = (t1.clientX + t2.clientX) / 2;
+			const py = (t1.clientY + t2.clientY) / 2;
+			const pointer = this._point || clientPointerRelativeToStage(px, py, this.getStage());
+			if (!this._point) this._point = pointer;
+
+			const startPos = {
+				x: pointer.x / oldScale - this.getStage().x() / oldScale,
+				y: pointer.y / oldScale - this.getStage().y() / oldScale,
+			};
+
+			this._scaleBy = 1.01 + Math.abs(delta) / 100;
+			const newScale = delta < 0 ? oldScale / this._scaleBy : oldScale * this._scaleBy;
+			this.getStage().scale({ x: newScale, y: newScale });
+
+			const newPosition = {
+				x: (pointer.x / newScale - startPos.x) * newScale,
+				y: (pointer.y / newScale - startPos.y) * newScale,
+			};
+
+			this.getStage().position(newPosition);
+			this.getStage().batchDraw();
+			this._lastDist = dist;
+		}
+	}
+
 
 	/* SETTER FUNCTIONS */
 	setDpi(val) { 

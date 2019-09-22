@@ -10,6 +10,8 @@ Have you ever had a situation, where you have an image that you want to multiply
 - Auto fill the page, so you don't need to count how many copies you need ;)
 - Lock the ratio of your image. Makes your image proportional.
 - Warning you, when you're doing something weird.
+- Can crop image
+- Responsive in mobile or tablet
 - Zoom in and out.
 - Save them as PDF or Image file.
 
@@ -36,3 +38,4 @@ $ yarn serve
 - [imba](https://github.com/imba/imba) - JS Framework with ruby and python like syntax but have React like feature.
 - [jsPDF](https://github.com/MrRio/jsPDF) - I can generated the result to pdf, thanks for this tool.
 - [Konva](https://konvajs.org) - Easily makes me handle the canvas stuff.
+- [cropper.js](https://github.com/fengyuanchen/cropperjs) - Good for cropping image

@@ -48,7 +48,7 @@ export class PaperS extends Konva.Shape {
 	
 	/* Margin lines */
 	_marginLines(shape) {
-		if (this._groupMarginLines && !this._isChanged) return;
+		if (this._groupMarginLines && !this._isMarginChanged) return;
 		this._groupMarginLines && this._groupMarginLines.destroy()
 
 		let margin = [this.margin.x, this.margin.y]
@@ -93,7 +93,10 @@ export class PaperS extends Konva.Shape {
 		this._groupMarginLines.add(topSide);
 		this._groupMarginLines.add(bottomSide);
 
+		this._groupMarginLines.cache();
+
 		shape.getLayer().add(this._groupMarginLines)
+		this._isMarginChanged = false;
   	}
 
   	/* Function to calculate all stuff for the funcs' renderer */
@@ -175,6 +178,8 @@ export class PaperS extends Konva.Shape {
 			remainSpace,
 		} = this._calculateRender(ispdf, config);
 		
+		this._errorBox && this._errorBox.remove()
+		this._checkErrorBox && this._checkErrorBox.remove();
 		(!ispdf && (this._groupOfImages = new Konva.Group()));
 		
 		let posX = x + margin.x,
@@ -416,13 +421,14 @@ export class PaperS extends Konva.Shape {
 		this._isChanged = true;
 	}
 
-	_zoom(state, isBtn) {
+	_zoom(state, isBtn, isMobile) {
 		let oldScale = this.getStage().scaleX(),
 			pointerPos;
 
-		if (oldScale > 2 && this.isCached && this._groupOfImages) {
+		if (oldScale > 2 && this.isCached && this._groupOfImages && !isMobile) {
+			this.isCached = false;
 			this._groupOfImages.clearCache();
-		} else if (this.isCached && this._groupOfImages){
+		} else if (!this.isCached && this._groupOfImages){
 			this._groupOfImages.cache();
 		}
 
@@ -528,7 +534,7 @@ export class PaperS extends Konva.Shape {
 			x: val.x > (this.width() / 2) ? (this.width() / 2) - 10 : val.x,
 			y: val.y > (this.height() / 2) ? (this.height() / 2) - 10 : val.y
 		};
-		this._isChanged = true;
+		this._isMarginChanged = true;
 	}
 	setSpace(val) { 
 		this.space = {

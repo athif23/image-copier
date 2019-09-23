@@ -27,12 +27,13 @@ export tag FileInput
 							width: width / 2,
 							height: height / 2
 						}
+						
+						Imba.commit()
+						data.@paper.@isChanged = true
+						data.@stage.batchDraw()
 
 					data.@paper:image:file:onerror = do |e|
 						console.log(e)
-
-					data.@paper.@isChanged = true
-					data.@stage.batchDraw()
 
 	def render
 		<self>

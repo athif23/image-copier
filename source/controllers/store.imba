@@ -83,6 +83,8 @@ export class Stores
 		let width = _.convertTo({from: @sizes:width:unit, to: 'px'}, @sizes:width:value, @density:value)
 		let height = _.convertTo({from: @sizes:height:unit, to: 'px'}, @sizes:height:value, @density:value)
 
+		if @autoFill then return @isError = false
+
 		if (width <= 0) && (height <= 0)
 			@errorMessage = "Image sizes can't be zero or less!"
 			return @isError = true

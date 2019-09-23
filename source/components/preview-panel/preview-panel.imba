@@ -4,6 +4,7 @@ const Konva = require('konva')
 export tag PreviewPanel
 	def mount
 		@timer = 0
+		@isMobile = false
 		let changeWidth = window.matchMedia('(min-width : 950px)')
 		self.onChangeWidth(changeWidth)
 		changeWidth.addListener(do self:onChangeWidth(changeWidth))
@@ -28,16 +29,7 @@ export tag PreviewPanel
 		data.@stage.on('wheel', do |e|
 			e:evt.preventDefault()
 			var state = (e:evt:deltaY > 0) ? "out" : "in"
-			data.@paper._zoom(state)
-		)
-
-		data.@stage.on('touchmove', do |e|
-			data.@paper._zoomMobile(e)
-		)
-
-		data.@stage.on('touchend', do |e|
-			data.@paper:_lastDist = 0
-			data.@paper:_point = undefined
+			data.@paper._zoom(state, false, @isMobile)
 		)
 
 	def onChangeWidth(x)
@@ -47,6 +39,7 @@ export tag PreviewPanel
 			data.@optionVisible = true
 			Imba.commit()
 		else
+			@isMobile = true
 			previewPanel:style:display = "none" if data.@optionVisible = true
 
 	def resizeCanvas(e)
@@ -71,5 +64,5 @@ export tag PreviewPanel
 			<button.back-option :click.backToOption> "Back"
 			<#container>
 			<.zoom-tools>
-				<button.out :click=(do data.@paper._zoom('out', true))> "-"
-				<button.in :click=(do data.@paper._zoom('in', true))> "+"
+				<button.out :click=(do data.@paper._zoom('out', true, @isMobile))> "-"
+				<button.in :click=(do data.@paper._zoom('in', true, @isMobile))> "+"

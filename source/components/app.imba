@@ -4,11 +4,11 @@ const Cropper = require('../js/cropperjs/cropper.min')
 
 tag CropBox
 	def mount
-		if data.@paper:image:file
+		if data.@paper:image:file && document.contains(@image-container.@dom)
 			let child = @image-container.@dom:lastElementChild  
 			while child
 				@image-container.@dom.removeChild(child)
-				child = @image-container:lastElementChild
+				child = @image-container.@dom:lastElementChild
 			let	img = Image.new()
 			if data.@paper:image:file isa Image
 				img:src = data.@paper:image:file:src
@@ -42,17 +42,14 @@ tag CropBox
 		data.@cropBoxVisible = false
 
 	def unmount
-		let child = @image-container.@dom:lastElementChild  
-		while child
-			@image-container.@dom.removeChild(child)
-			child = @image-container.@dom:lastElementChild
+		self.@dom.remove()
 
 	def render
 		<self>
 			<.crop-box :click.close>
 			<.crop-image-box>
 				if data.@paper:image:file
-					<div@image-container>
+					<div@image-container css:max-width="{window:innerWidth - 25}px" css:max-height="{window:innerHeight - 110}px">
 					<.option-buttons .btn--combine-2>
 						<button.btn :click.close> "Close"
 						<button.btn .btn--secondary :click.getCroppedImage> "Apply"

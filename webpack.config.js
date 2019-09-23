@@ -2,6 +2,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const MediaQuerySplittingPlugin = require('media-query-splitting-plugin');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const OfflinePlugin = require('offline-plugin');
 
 module.exports = {
   plugins: [
@@ -14,7 +15,8 @@ module.exports = {
     new HtmlWebPackPlugin({
       filename: "index.html",
       template: "source/index.html"
-    })
+    }),
+    new OfflinePlugin()
   ],
   module: {
     rules: [

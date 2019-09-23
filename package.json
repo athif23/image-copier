@@ -21,6 +21,7 @@
     "media-query-splitting-plugin": "^1.1.13",
     "mini-css-extract-plugin": "^0.8.0",
     "node-sass": "^4.12.0",
+    "offline-plugin": "^5.0.7",
     "sass-loader": "^8.0.0",
     "style-loader": "^1.0.0",
     "webpack": "^4.40.2",

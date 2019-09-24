@@ -1,5 +1,6 @@
 @import "./generate-field/_anim";
 @import "./unit-input/units-button/units-button";
+@import "./files-field/paper-sizes/paper-sizes";
 
 .OptionPanel {
 	height: 100%;
@@ -237,6 +238,21 @@
 			border-left: none;
 			margin-bottom: 20px;
 
+			.format-paper {
+				summary {
+					display: flex;
+					justify-content: flex-end;
+					align-items: center;
+					padding-right: 10px;
+					outline: none;
+				}
+
+				label {
+					justify-content: flex-end;
+					padding: 8px 8px;
+				}
+			}
+
 			@media #{$mobile} {
 				height: 40px;
 				.last-input {
@@ -252,7 +268,7 @@
 				height: 35px;
 			}
 
-			label {
+			.label {
 				padding: 0 20px;
 				width: 100%;
 				height: 100%;

@@ -5,8 +5,9 @@ const Image = require('../js/Image'):ImageS
 
 export class Stores
 	prop filename     # -> Generated file name
+	prop sizes-list   # -> A list of paper's size
 	prop sizes        # -> Sizes of the images, if 'default' will default to imageProps
-	prop space       # -> Determine the space of each copy of the images in the layou
+	prop space        # -> Determine the space of each copy of the images in the layou
 	prop margin       # -> Determine the margin of the sides layout or paper
 	prop copies       # -> Number of the copy to make
 	prop density      # -> Density of the resulted images
@@ -25,6 +26,15 @@ export class Stores
 		@timer = 0 # for debounce function 
 		@currentInput = 'width'
 
+		@sizes-list = [
+			{ title: 'A4 - 210 x 297 mm', value: "A4", width: 210, height: 297, unit: 'mm' },
+			{ title: 'A3 - 297 x 420 mm', value: "A3", width: 297, height: 420, unit: 'mm' },
+			{ title: 'A2 - 420 x 594 mm', value: "A2", width: 420, height: 594, unit: 'mm' },
+			{ title: 'A1 - 594 x 841 mm', value: "A1", width: 594, height: 841, unit: 'mm' },
+			{ title: 'Legal - 216 x 356 mm', value: "Legal", width: 216, height: 356, unit: 'mm' },
+			{ title: 'Letter - 216 x 279 mm', value: "Letter", width: 216, height: 279, unit: 'mm' },
+			{ title: 'Half-Letter - 140 x 216 mm', value: "Half-Letter", width: 140, height: 216, unit: 'mm' }
+		]
 		@sizes = {
 			height: { value: "10", unit: "px" },
 			width:  { value: "10", unit: "px" }
@@ -34,7 +44,7 @@ export class Stores
 		@margin = { value: "35", unit: "px" }
 		@copies = { value: "323" }
 		@density = { value: "72" }
-		@format = { value: "A4", width: 210, height: 297, unit: 'mm' }
+		@format = { title: 'A4 - 210 x 297 mm', value: 'A4', width: 210, height: 297, unit: 'mm' }
 
 		@errorMessage = "Paper is too small!"
 		@isError = false

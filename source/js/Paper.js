@@ -368,9 +368,8 @@ export class PaperS extends Konva.Shape {
 	/* Print to canvas */
 	_sceneFunc(ctx, shape) {
 		const { margin, space, justifyContent } = this;
-
 		ctx.beginPath();
-	    ctx.rect(0, 0, shape.getAttr('width'), shape.getAttr('height'));
+	    ctx.rect(0, 0, this.width(), this.height());
 
 		// Draw margin lines
 	    this._marginLines(shape)
@@ -380,6 +379,8 @@ export class PaperS extends Konva.Shape {
 		} else if (!this.autoFill && this.copies >= 1) {
 			this._normalRenderer(shape, false, { margin, space, image: this.image, justifyContent });
 		}
+
+		this._isChanged = false;
 
 	    ctx.fillStrokeShape(shape);
 	}

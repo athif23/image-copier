@@ -1,5 +1,6 @@
 const _ = require('../../../helpers'):Utils
 import { FileInput } from './file-input/file-input'
+import { PaperSizes } from './paper-sizes/paper-sizes'
 
 export tag FilesField
 	def mount
@@ -25,6 +26,9 @@ export tag FilesField
 			data.@optionVisible = false
 			Imba.commit()
 
+	def onPaperChange
+		console.log data.@format
+
 	def render
 		<self css:padding="5px 0">
 			<.files-field .two-inputs>
@@ -40,7 +44,7 @@ export tag FilesField
 						<p> "{data.@errorMessage}"
 			<.format>
 				<label.label for="format"> "Format"
-				<input@formatpaper[data.@format:value] name="format" type="text" maxlength="4" .last-input>
+				<PaperSizes[data].format-paper .last-input>
 			<FileInput[data]>
 			if data.@paper:image:file
 				<.preview-container>
